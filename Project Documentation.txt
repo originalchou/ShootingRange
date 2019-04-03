@@ -1,0 +1,43 @@
+﻿CS488 Final Project Documentation
+Project name: Shooting Range
+Author name: Chang Zhou
+Student ID: 20503578
+
+
+1. Description:
+    The project is designed for cs488 final project. This documentation will introduce the important architecture and technique used in this project.
+
+
+1. Build:
+Please follow the instructions below to build the project:
+    Go to the cs488Project folder, run
+    premake4 gmake,
+    Make
+to build the library first. For mac users, please copy the libirrklang.dylib file from the shared/irrklang-1.60/bin/macosx-gcc to the default dyld folder. For linux users, please copy the libirrklang.so file from the shared/irrklang-1.60/bin/linux-gcc to LD_LIBRARY_PATH. Then go the cs488Project/cs488Project folder, and run:
+    premake4 gmake,
+    Make
+to build the project. Finally, run:
+    ./cs488Project to run the project.
+
+
+1. Main Architecture:
+The architecture is based on ThinMatrix tutorial and cs488-framework. There are several main objects:
+Loader - Load vertices, texture coordinates, indices, texture pictures to vao and return vaoID and textureID as RawModel object and TexturedModel object seperately.
+Entity - Created by pass the vaoID, textureID and object transformation information. 
+Render - Render will get and upload buffers to corresponding ShaderProgram from the entity passed in. And also upload uniforms such as light color, view matrix, projection matrix etc. After calling glDraw() method, render will unbind the vao automatically.
+FPSCamera - Receive keyboard input and update view matrix.
+
+
+
+
+1. Main Techniques:
+Collision Detection - AABB collision detections is used for detecting player - building collision and bullet - building collison. 3D boxes are created for the player, buildings and bullets.
+
+
+Fog(Visibility) - Visibility is calculated in the basic shader and terrain shader program by following formula: visibility = exp(-pow((density * toCamDistance), gradient)).
+
+
+Weapon Shader - Remove view matrix part to let weapon drawn at fixed position inside the screen. The toLightDistance is calculated by the distance from the light to the camera in order to construct the weapon diffuse and specular effect.
+
+
+Bullet Hole - Bullet holes are created by construction the square plane entity at the bullet collision point. Ant its normal is the inverse direction of the bullet direction.(which is also the inverse of the view direction) The textureColor.a is discarded if its value is less than 0.5 in order to ignore the transparency part of the bullet hole texture.
